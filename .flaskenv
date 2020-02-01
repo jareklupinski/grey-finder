@@ -1,1 +1,2 @@
 FLASK_APP=greyFinder.py
+FLASK_DEBUG=0
