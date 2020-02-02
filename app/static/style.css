@@ -4,6 +4,12 @@
 	display: inline-block;
 }
 
+.headerTabs {
+	width: 24%;
+	display: inline-block;
+	margin: auto;
+}
+
 .cssfade {
 	display: inline-block;
     margin: auto;

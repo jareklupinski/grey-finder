@@ -9,15 +9,16 @@ import logging, requests, os
 from app.models import User, Picture
 from app.main import bp
 from app.main.forms import UploadForm
+from app.auth.forms import LoginForm, RegistrationForm
 
 from PIL import Image
 
 @bp.route('/')
 @bp.route('/index')
-@login_required
 def index():
-    form = UploadForm()
-    return render_template('index.html', form=form)
+    uploadForm = UploadForm()
+    loginForm = LoginForm()
+    return render_template('index.html', uploadform=uploadForm, loginform=loginForm)
 
 @bp.route('/upload',methods = ['POST'])
 @login_required
@@ -29,7 +30,7 @@ def upload():
         for line in csvLines:
             urlString = str(line)
             idIndex = urlString.find("://")
-            fileName = urlString[idIndex+3:] + ".jpg"
+            fileName = str(current_user.id) + "/" + urlString[idIndex+3:] + ".jpg"
             filePath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fileName))
             urlPath = filePath.replace("app/static/", "")
             picture = Picture.query.filter_by(url=urlPath).first()

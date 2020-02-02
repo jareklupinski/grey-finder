@@ -17,20 +17,21 @@ def get_pictures():
 @bp.route('/pictures', methods=['GET'])
 @multi_auth.login_required
 def get_paginated_pictures():
-    index = int(request.args.get('start'))
-    dimensions = int(request.args.get('dimensions'))
-    greyscale = request.args.get('greyscale')
-    pictures = Picture.query.filter(Picture.user_id == current_user.id).all()[index:index+10]
-    if dimensions > 0:
-        print(dimensions)
-        pictures = Picture.query.filter(Picture.user_id == current_user.id, Picture.width < dimensions+50, Picture.width > dimensions-50).all()[index:index+10]
-    picturesJson = []
-    for picture in pictures:
-        if greyscale != None:
-            picturesJson.append(picture.to_greydict())
-        else:
-            picturesJson.append(picture.to_dict())
-    return jsonify(picturesJson)
+    if current_user.is_authenticated:
+        index = int(request.args.get('start'))
+        dimensions = int(request.args.get('dimensions'))
+        greyscale = request.args.get('greyscale')
+        pictures = Picture.query.filter(Picture.user_id == current_user.id).all()[index:index+10]
+        if dimensions > 0:
+            pictures = Picture.query.filter(Picture.user_id == current_user.id, Picture.height < dimensions+50, Picture.height > dimensions-50).all()[index:index+10]
+        picturesJson = []
+        for picture in pictures:
+            if greyscale != None:
+                picturesJson.append(picture.to_greydict())
+            else:
+                picturesJson.append(picture.to_dict())
+        return jsonify(picturesJson)
+    return {}
 
 @bp.route('/picture/<int:index>', methods=['GET'])
 @multi_auth.login_required

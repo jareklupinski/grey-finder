@@ -1,36 +1,57 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="text-align: center;">
+<div style="text-align: center;">   
+    {% if current_user.is_anonymous %}
+    <form action="{{ url_for('auth.login') }}" method="post" novalidate>
+        {{ loginform.hidden_tag() }}
+        {{ loginform.username.label }}
+        {{ loginform.username(size=16) }}
+        {% for error in loginform.username.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+        {{ loginform.password.label }}
+        {{ loginform.password(size=16) }}
+        {% for error in loginform.password.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        
+        {{ loginform.submit() }}
+    </form>
+    {% else %}
+    
     <form action = "/upload" method="POST" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        {{ form.csvFile() }}
-        {{ form.submit() }}
+        GreyFinder:
+        <a href="{{ url_for('auth.logout') }}">Logout {{ current_user.username }}</a>
+        {{ uploadform.hidden_tag() }}
+        {{ uploadform.csvFile() }}
+        {{ uploadform.submit() }}
     </form>
-
-    Filters:
-    <form>
-        <input id="smallButton" onclick="reloadItems();" type="radio" name="dimensions" value="100">Small</input>
-        <input id="mediumButton" onclick="reloadItems();" type="radio" name="dimensions" value="200">Medium</input>
-        <input id="largeButton" onclick="reloadItems();" type="radio" name="dimensions" value="300">Large</input>
-        <input id="allButton" onclick="reloadItems();" type="radio" name="dimensions" value="0">All</input>
-        <input id="greyscaleButton" onclick="reloadItems();" type="checkbox" name="greyscale" value="1">Greyscale</input>
-    </form>
-
-    <nav class="navbar navbar-light bg-light sticky-top">
-        <div class="container">
-            <a class="navbar-brand" id="loaded" href="#">0 items loaded</a>
-        </div>
-    </nav>
-
+    {% endif %}
+</div>
+<hr>
+<div style="text-align: center;">
+    <div id="filters">
+        <form>
+            <input id="smallButton" onclick="reloadItems();" type="radio" name="dimensions" value="100">Small</input>
+            <input id="mediumButton" onclick="reloadItems();" type="radio" name="dimensions" value="200">Medium</input>
+            <input id="largeButton" onclick="reloadItems();" type="radio" name="dimensions" value="300">Large</input>
+            <input id="allButton" onclick="reloadItems();" type="radio" name="dimensions" value="0">All</input>
+            <input id="greyscaleButton" onclick="reloadItems();" type="checkbox" name="greyscale" value="1">Greyscale</input>
+        </form>
+    </div>
     <div id="container">
         <template id="image_template">
             <img id="content"/>
         </template>
     </div>
-
+    <br/><br/>
+    
     <div id="sentinel">
-        <div role="status"></div>
+        <div role="status">
+            <a class="navbar-brand" id="loaded" href="#">0 items found</a>
+        </div>
     </div>
     
 </div>
@@ -40,23 +61,25 @@
     var loaded = document.querySelector("#loaded");
     var sentinel = document.querySelector('#sentinel');
     var counter = 0;
-    var barVisible = 0;
+    var barVisible = false;
+
     function loadItems() {
+
         var dimensions = 0
         var ele = document.getElementsByName('dimensions');      
         for(i = 0; i < ele.length; i++) { 
             if(ele[i].checked) 
-                dimensions = ele[i].value; 
+            dimensions = ele[i].value; 
         } 
-
+        
         var greyscale = ""
         if (document.getElementById('greyscaleButton').checked) {
             greyscale = "&greyscale"
         }
+
         fetch(`/api/pictures?start=${counter}&dimensions=${dimensions}${greyscale}`).then((response) => {
             response.json().then((data) => {
                 if (!data.length) {
-                    sentinel.innerHTML = "No more pictures!";
                     return;
                 }
                 for (var i = 0; i < data.length; i++) {
@@ -64,7 +87,7 @@
                     template_clone.querySelector("#content").src = "static/" + data[i]['url'];
                     scroller.appendChild(template_clone);
                     counter += 1;
-                    loaded.innerText = `${counter} items loaded`;
+                    loaded.innerText = `${counter} items found`;
                 }
             })
         })
@@ -75,23 +98,21 @@
             scroller.removeChild(scroller.firstChild);
         }
         counter = 0;
-        if (barVisible) {
+        loaded.innerText = `${counter} items found`;
+        if (barVisible == true) {
             loadItems();
         }
     }
     
     var intersectionObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            console.log(entry.intersectionRatio);
-            barVisible = entry.intersectionRatio;
-        })
-        if (entries[0].intersectionRatio <= 0) {
+        barVisible = entries[0].isIntersecting
+        if (barVisible == false) {
             return;
         }
         loadItems();
     });
-    
-    // Instruct the IntersectionObserver to watch the sentinel
+
     intersectionObserver.observe(sentinel);
+
 </script>
 {% endblock %}
