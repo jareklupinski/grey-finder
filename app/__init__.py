@@ -1,16 +1,19 @@
 import os
 import logging
+from logging.handlers import RotatingFileHandler
+from config import Config
 from flask import Flask
 from flask_cors import CORS
-from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from logging.handlers import RotatingFileHandler
+from flask_apscheduler import APScheduler
+
 
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
+scheduler = APScheduler()
 
 def create_app(config_class=Config):
     app = Flask(__name__, static_url_path='/static')
@@ -18,6 +21,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app)
+    scheduler.init_app(app)
     CORS(app, resources={r'/*': {'origins': '*'}})
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
@@ -37,6 +41,8 @@ def create_app(config_class=Config):
         app.logger.addHandler(file_handler)
         app.logger.setLevel(logging.INFO)
         app.logger.info('GreyFinder startup')
+    
+    scheduler.start()
     return app
 
 from app import models

@@ -10,7 +10,7 @@
         {% for error in loginform.username.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
-
+        
         {{ loginform.password.label }}
         {{ loginform.password(size=16) }}
         {% for error in loginform.password.errors %}
@@ -32,6 +32,7 @@
 </div>
 <hr>
 <div style="text-align: center;">
+
     <div id="filters">
         <form>
             <input id="smallButton" onclick="reloadItems();" type="radio" name="dimensions" value="100">Small</input>
@@ -41,12 +42,15 @@
             <input id="greyscaleButton" onclick="reloadItems();" type="checkbox" name="greyscale" value="1">Greyscale</input>
         </form>
     </div>
+
     <div id="container">
         <template id="image_template">
             <img id="content"/>
         </template>
     </div>
-    <br/><br/>
+
+    <br/>
+    <br/>
     
     <div id="sentinel">
         <div role="status">
@@ -55,64 +59,61 @@
     </div>
     
 </div>
+
 <script>
     var scroller = document.querySelector("#container");
     var template = document.querySelector('#image_template');
     var loaded = document.querySelector("#loaded");
     var sentinel = document.querySelector('#sentinel');
     var counter = 0;
-    var barVisible = false;
 
+    function isAnyPartOfElementInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        const windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+        const windowWidth = (window.innerWidth || document.documentElement.clientWidth);
+        const vertInView = (rect.top <= windowHeight) && ((rect.top + rect.height) >= 0);
+        const horInView = (rect.left <= windowWidth) && ((rect.left + rect.width) >= 0);
+        return (vertInView && horInView);
+    }
+    
     function loadItems() {
-
-        var dimensions = 0
-        var ele = document.getElementsByName('dimensions');      
-        for(i = 0; i < ele.length; i++) { 
-            if(ele[i].checked) 
-            dimensions = ele[i].value; 
-        } 
-        
-        var greyscale = ""
-        if (document.getElementById('greyscaleButton').checked) {
-            greyscale = "&greyscale"
-        }
-
-        fetch(`/api/pictures?start=${counter}&dimensions=${dimensions}${greyscale}`).then((response) => {
-            response.json().then((data) => {
-                if (!data.length) {
-                    return;
-                }
-                for (var i = 0; i < data.length; i++) {
-                    let template_clone = template.content.cloneNode(true);
-                    template_clone.querySelector("#content").src = "static/" + data[i]['url'];
-                    scroller.appendChild(template_clone);
-                    counter += 1;
-                    loaded.innerText = `${counter} items found`;
-                }
+        if (isAnyPartOfElementInViewport(sentinel)){
+            var dimensions = 0
+            var ele = document.getElementsByName('dimensions');      
+            for(i = 0; i < ele.length; i++) { 
+                if(ele[i].checked) 
+                dimensions = ele[i].value; 
+            } 
+            
+            var greyscale = ""
+            if (document.getElementById('greyscaleButton').checked) {
+                greyscale = "&greyscale"
+            }
+            
+            fetch(`/api/pictures?start=${counter}&dimensions=${dimensions}${greyscale}`).then((response) => {
+                response.json().then((data) => {
+                    if (!data.length) {
+                        setTimeout(loadItems, 5000);
+                    }
+                    else {
+                        for (var i = 0; i < data.length; i++) {
+                            let template_clone = template.content.cloneNode(true);
+                            template_clone.querySelector("#content").src = "static/" + data[i]['url'];
+                            scroller.appendChild(template_clone);
+                            counter += 1;
+                            loaded.innerText = `${counter} items found`;
+                        }
+                        setTimeout(loadItems, 1000);
+                    }
+                })
             })
-        })
-    }
-    
-    function reloadItems() {
-        while (scroller.firstChild) {
-            scroller.removeChild(scroller.firstChild);
         }
-        counter = 0;
-        loaded.innerText = `${counter} items found`;
-        if (barVisible == true) {
-            loadItems();
+        else {
+            setTimeout(loadItems, 500);
         }
     }
+
+    loadItems();
     
-    var intersectionObserver = new IntersectionObserver(entries => {
-        barVisible = entries[0].isIntersecting
-        if (barVisible == false) {
-            return;
-        }
-        loadItems();
-    });
-
-    intersectionObserver.observe(sentinel);
-
 </script>
 {% endblock %}
