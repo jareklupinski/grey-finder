@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div style="text-align: center;">
     <h1>Hi, {{ current_user.username }}!</h1>
+    
     <form action = "/upload" method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {{ form.csvFile() }}
         {{ form.submit() }}
     </form>
-    {% for picture in pictures %}
-    <div class="cssfade" style="display: inline-block; background-image: url('{{ picture.greyurl }}');" ><img src={{ picture.url }}></div>
-    {% endfor %}
+    <div id="container">
+        {% for picture in pictures %}
+        <div class="cssfade" style="background-image: url('{{ picture.greyurl }}');" ><img src={{ picture.url }}></div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

@@ -16,7 +16,10 @@ from PIL import Image
 @bp.route('/index')
 @login_required
 def index():
+    dimensions = request.args.get('dimensions')
     pictures = Picture.query.filter(Picture.user_id == current_user.id)
+    if dimensions != None:
+        pictures = Picture.query.filter(Picture.user_id == current_user.id, Picture.width >= dimensions)
     form = UploadForm()
     return render_template('index.html', title='GreyFinder', pictures=pictures, form=form)
 
@@ -43,8 +46,18 @@ def upload():
                     greyFilePath = filePath.replace(".jpg", "-greyscale.jpg")
                     greyUrlPath = urlPath.replace(".jpg", "-greyscale.jpg")
                     img.save(greyFilePath, "JPEG")
-                    picture = Picture(url=urlPath, greyurl=greyUrlPath, user_id=current_user.id)
+                    picture = Picture(url=urlPath, greyurl=greyUrlPath, width=img.width, height=img.height, user_id=current_user.id)
                     db.session.add(picture)
         db.session.commit()
             
     return redirect(url_for("main.index"))
+
+# @bp.route('/static/<path:filename>')
+# def serve_static(filename):
+#     filenameString = str(filename)
+#     print(filenameString)
+#     if filenameString.find(".jpg?greyscale") != -1:
+#         print("grey")
+#         filenameString = filenameString.replace(".jpg?greyscale", "-greyscale.jpg")
+#     return bp.send_static_file(str.encode(filenameString))
+    

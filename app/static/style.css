@@ -1,3 +1,15 @@
+#container {
+	width:95%;
+	text-align: center;
+	display: inline-block;
+}
+
+.cssfade {
+	display: inline-block;
+    margin: auto;
+    background-repeat: no-repeat;
+}
+
 .cssfade img {
 	-webkit-transition: all ease 1s;
 	-moz-transition: all ease 1s;
