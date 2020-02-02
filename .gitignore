@@ -2,4 +2,6 @@ venv/
 *.pyc
 .vscode/
 *.db
-*.log
+*.log*
+images/
+.DS_Store
