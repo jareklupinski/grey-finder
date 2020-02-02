@@ -55,3 +55,9 @@ class Picture(db.Model):
 
     def __repr__(self):
         return '<Picture {}>'.format(self.url)
+    
+    def to_dict(self):
+        data = {
+            'url': self.url,
+        }
+        return data
