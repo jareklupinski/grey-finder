@@ -14,16 +14,20 @@ from PIL import Image
 
 @bp.route('/')
 @bp.route('/index')
+@bp.route('/index/<int:page>')
 @login_required
-def index():
+def index(page=1):
+    per_page = 10
+    # pictures = Picture.query.filter(Picture.user_id == current_user.id)
     dimensions = request.args.get('dimensions')
-    pictures = Picture.query.filter(Picture.user_id == current_user.id)
-    if dimensions != None:
-        pictures = Picture.query.filter(Picture.user_id == current_user.id, Picture.width >= dimensions)
     form = UploadForm()
+    pictures = Picture.query.filter(Picture.user_id == current_user.id).paginate(page,per_page,error_out=False)
+    if dimensions != None:
+        pictures = Picture.query.filter(Picture.user_id == current_user.id, Picture.width >= dimensions).paginate(page,per_page,error_out=False)
     return render_template('index.html', title='GreyFinder', pictures=pictures, form=form)
 
 @bp.route('/upload',methods = ['POST'])
+@login_required
 def upload():
     form = UploadForm()
     if form.validate_on_submit():
@@ -34,7 +38,7 @@ def upload():
             idIndex = urlString.find("://")
             fileName = urlString[idIndex+3:] + ".jpg"
             filePath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(fileName))
-            urlPath = filePath.replace("app/", "")
+            urlPath = filePath.replace("app/static/", "")
             picture = Picture.query.filter_by(url=urlPath).first()
             if picture is None:
                 with open(filePath, "wb") as imageFile:
