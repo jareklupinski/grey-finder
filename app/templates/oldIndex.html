@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="text-align: center;">
+    <h1>Hi, {{ current_user.username }}!</h1>
+    
+    <form action = "/upload" method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ form.csvFile() }}
+        {{ form.submit() }}
+    </form>
+    <form>
+        <button type="submit" name="dimensions" value="100">Small</button>
+        <button type="submit" name="dimensions" value="200">Medium</button>
+        <button type="submit" name="dimensions" value="300">Large</button>
+     </form>
+    <div id="container">
+        {% for picture in pictures.items %}
+        <div class="cssfade" style="background-image: url('{{ url_for("static", filename=picture.greyurl) }}');" ><img src={{ url_for('static', filename=picture.url) }}></div>
+        {% endfor %}
+    </div>
+    <div>
+    {% if pictures.has_prev %}<a href="{{ url_for('main.index', page=pictures.prev_num) }}">&lt;&lt; Newer pictures</a>{% else %}&lt;&lt; Newer pictures{% endif %} | 
+        {% if pictures.has_next %}<a href="{{ url_for('main.index', page=pictures.next_num) }}">Older pictures &gt;&gt;</a>{% else %}Older pictures &gt;&gt;{% endif %}
+    </div>
+</div>
+{% endblock %}

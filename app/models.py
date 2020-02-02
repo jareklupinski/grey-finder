@@ -46,7 +46,10 @@ class User(UserMixin, db.Model):
 
 @login.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    try:
+        return User.query.get(int(id))
+    except:
+        return None
     
 class Picture(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -60,7 +63,9 @@ class Picture(db.Model):
         return '<Picture {}>'.format(self.url)
     
     def to_dict(self):
-        data = {
-            'url': self.url,
-        }
+        data = {'url': self.url}
+        return data
+    
+    def to_greydict(self):
+        data = {'url': self.greyurl}
         return data

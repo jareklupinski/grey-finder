@@ -14,17 +14,10 @@ from PIL import Image
 
 @bp.route('/')
 @bp.route('/index')
-@bp.route('/index/<int:page>')
 @login_required
-def index(page=1):
-    per_page = 10
-    # pictures = Picture.query.filter(Picture.user_id == current_user.id)
-    dimensions = request.args.get('dimensions')
+def index():
     form = UploadForm()
-    pictures = Picture.query.filter(Picture.user_id == current_user.id).paginate(page,per_page,error_out=False)
-    if dimensions != None:
-        pictures = Picture.query.filter(Picture.user_id == current_user.id, Picture.width >= dimensions).paginate(page,per_page,error_out=False)
-    return render_template('index.html', title='GreyFinder', pictures=pictures, form=form)
+    return render_template('index.html', form=form)
 
 @bp.route('/upload',methods = ['POST'])
 @login_required
