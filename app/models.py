@@ -51,6 +51,7 @@ def load_user(id):
 class Picture(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(256))
+    greyurl = db.Column(db.String(256))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):

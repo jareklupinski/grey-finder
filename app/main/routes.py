@@ -10,6 +10,8 @@ from app.models import User, Picture
 from app.main import bp
 from app.main.forms import UploadForm
 
+from PIL import Image
+
 @bp.route('/')
 @bp.route('/index')
 @login_required
@@ -36,7 +38,12 @@ def upload():
                     print("Downloading " + str(line))
                     response = requests.get(line)
                     imageFile.write(response.content)
-                    picture = Picture(url=urlPath, user_id=current_user.id)
+                    imageFile.close()
+                    img = Image.open(filePath).convert('L')
+                    greyFilePath = filePath.replace(".jpg", "-greyscale.jpg")
+                    greyUrlPath = urlPath.replace(".jpg", "-greyscale.jpg")
+                    img.save(greyFilePath, "JPEG")
+                    picture = Picture(url=urlPath, greyurl=greyUrlPath, user_id=current_user.id)
                     db.session.add(picture)
         db.session.commit()
             

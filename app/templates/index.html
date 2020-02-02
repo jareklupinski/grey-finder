@@ -8,6 +8,6 @@
         {{ form.submit() }}
     </form>
     {% for picture in pictures %}
-    <div><p><img src={{ picture.url }}></p></div>
+    <div class="cssfade" style="display: inline-block; background-image: url('{{ picture.greyurl }}');" ><img src={{ picture.url }}></div>
     {% endfor %}
 {% endblock %}

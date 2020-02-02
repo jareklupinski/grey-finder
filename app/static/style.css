@@ -1,0 +1,10 @@
+.cssfade img {
+	-webkit-transition: all ease 1s;
+	-moz-transition: all ease 1s;
+	-o-transition: all ease 1s;
+	-ms-transition: all ease 1s;
+	transition: all ease 1s;
+}
+.cssfade img:hover {
+	opacity: 0;
+}
