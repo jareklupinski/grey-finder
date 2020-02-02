@@ -1,16 +1,16 @@
-from flask import render_template, flash, redirect, request, url_for
+from flask import render_template, redirect, request, url_for
 from flask import current_app as app
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_apscheduler import APScheduler
 from werkzeug import secure_filename
 from werkzeug.urls import url_parse
-from app import db, scheduler
 import logging, requests, os
 
+from app import db, scheduler
 from app.models import User, Picture
 from app.main import bp
 from app.main.forms import UploadForm
-from app.auth.forms import LoginForm, RegistrationForm
+from app.auth.forms import LoginForm
 
 from PIL import Image
 
@@ -28,10 +28,10 @@ def upload():
     if form.validate_on_submit():
         csvData = form.csvFile.data 
         lines = csvData.read().splitlines()
-        app.apscheduler.add_job(func=scheduled_task, trigger='date', args=[current_user.id, lines], id=str(current_user.id) + str(lines[0]))
+        app.apscheduler.add_job(func=downloadImages, trigger='date', args=[current_user.id, lines], id=str(current_user.id) + str(lines[0]))
     return redirect(url_for("main.index"))
 
-def scheduled_task(current_user_id, lines):
+def downloadImages(current_user_id, lines):
     app = scheduler.app
     with app.app_context():
         for line in lines:

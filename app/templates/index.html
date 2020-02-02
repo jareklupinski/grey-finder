@@ -2,37 +2,55 @@
 
 {% block content %}
 <div style="text-align: center;">   
+    
     {% if current_user.is_anonymous %}
+    
     <form action="{{ url_for('auth.login') }}" method="post" novalidate>
         {{ loginform.hidden_tag() }}
-        {{ loginform.username.label }}
-        {{ loginform.username(size=16) }}
-        {% for error in loginform.username.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
+
+        <div class="headerTabs">
+            {{ loginform.username.label }}
+            {{ loginform.username(size=16) }}
+            {% for error in loginform.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+        <div class="headerTabs">
+            {{ loginform.password.label }}
+            {{ loginform.password(size=16) }}
+            {% for error in loginform.password.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            {{ loginform.submit() }}
+        </div>
         
-        {{ loginform.password.label }}
-        {{ loginform.password(size=16) }}
-        {% for error in loginform.password.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-        
-        {{ loginform.submit() }}
     </form>
+    
     {% else %}
     
     <form action = "/upload" method="POST" enctype="multipart/form-data">
-        GreyFinder:
-        <a href="{{ url_for('auth.logout') }}">Logout {{ current_user.username }}</a>
-        {{ uploadform.hidden_tag() }}
-        {{ uploadform.csvFile() }}
-        {{ uploadform.submit() }}
+
+        <div class="headerTabs">
+            GreyFinder:
+            <a href="{{ url_for('auth.logout') }}">Logout {{ current_user.username }}</a>
+        </div>
+        
+        <div class="headerTabs">
+            {{ uploadform.hidden_tag() }}
+            {{ uploadform.csvFile() }}
+            {{ uploadform.submit() }}
+        </div>
+        
     </form>
+    
     {% endif %}
 </div>
-<hr>
-<div style="text-align: center;">
 
+<hr>
+
+<div style="text-align: center;">
+    
     <div id="filters">
         <form>
             <input id="smallButton" onclick="reloadItems();" type="radio" name="dimensions" value="100">Small</input>
@@ -42,22 +60,24 @@
             <input id="greyscaleButton" onclick="reloadItems();" type="checkbox" name="greyscale" value="1">Greyscale</input>
         </form>
     </div>
-
+    
     <div id="container">
         <template id="image_template">
             <img id="content"/>
         </template>
     </div>
-
+    
     <br/>
     <br/>
     
     <div id="sentinel">
         <div role="status">
-            <a class="navbar-brand" id="loaded" href="#">0 items found</a>
+            <a id="loaded" href="#">0 items found</a>
         </div>
     </div>
     
 </div>
+
 <script src="/static/script.js"></script>
+
 {% endblock %}
