@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug import secure_filename
 from werkzeug.urls import url_parse
 from app import db
-import logging, requests, uuid, os
+import logging, requests, os
 
 from app.models import User, Picture
 from app.main import bp
@@ -48,13 +48,3 @@ def upload():
         db.session.commit()
             
     return redirect(url_for("main.index"))
-
-# @bp.route('/static/<path:filename>')
-# def serve_static(filename):
-#     filenameString = str(filename)
-#     print(filenameString)
-#     if filenameString.find(".jpg?greyscale") != -1:
-#         print("grey")
-#         filenameString = filenameString.replace(".jpg?greyscale", "-greyscale.jpg")
-#     return bp.send_static_file(str.encode(filenameString))
-    
