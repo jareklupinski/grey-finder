@@ -1,4 +1,4 @@
-var scroller = document.querySelector("#container");
+var scroller = document.querySelector("#image_container");
 var template = document.querySelector('#image_template');
 var loaded = document.querySelector("#loaded");
 var sentinel = document.querySelector('#sentinel');

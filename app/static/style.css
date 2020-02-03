@@ -1,28 +1,3 @@
-#container {
-	width:95%;
+#app{
 	text-align: center;
-	display: inline-block;
-}
-
-.headerTabs {
-	width: 24%;
-	display: inline-block;
-	margin: auto;
-}
-
-.cssfade {
-	display: inline-block;
-    margin: auto;
-    background-repeat: no-repeat;
-}
-
-.cssfade img {
-	-webkit-transition: all ease 1s;
-	-moz-transition: all ease 1s;
-	-o-transition: all ease 1s;
-	-ms-transition: all ease 1s;
-	transition: all ease 1s;
-}
-.cssfade img:hover {
-	opacity: 0;
 }
