@@ -43,7 +43,6 @@ def downloadImages(current_user_id, lines):
             picture = Picture.query.filter_by(url=urlPath).first()
             if picture is None:
                 with open(filePath, "wb") as imageFile:
-                    print("Downloading " + str(line))
                     response = requests.get(line)
                     imageFile.write(response.content)
                     imageFile.close()
