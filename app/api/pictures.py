@@ -15,7 +15,6 @@ def get_pictures():
     return jsonify(picturesJson)
 
 @bp.route('/pictures', methods=['GET'])
-@basic_auth.login_required
 def get_paginated_pictures():
     if current_user.is_authenticated:
         index = int(request.args.get('start'))
