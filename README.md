@@ -1,6 +1,6 @@
 # GreyFinder
 
-YouTube Preview:
+Click the Preview for a YouTube Demo Video:
 [![Watch the video](https://img.youtube.com/vi/nWTzfKL8vcE/maxresdefault.jpg)](https://youtu.be/nWTzfKL8vcE)
 
 
