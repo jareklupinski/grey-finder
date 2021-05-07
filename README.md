@@ -1,10 +1,10 @@
-# GreyFinder
+# grey-finder
 
 Click the Preview for a YouTube Demo Video:
 [![Watch the video](https://img.youtube.com/vi/nWTzfKL8vcE/maxresdefault.jpg)](https://youtu.be/nWTzfKL8vcE)
 
 
-**GreyFinder** is a Flask app that allows a user to upload a CSV file containing image links (e.g. [https://pastebin.com/BmA8B0tY](https://pastebin.com/BmA8B0tY)). After the CSV is uploaded, the images from within the file are presented to the user in a grid, along with an option to filter by size and optionally show greyscale versions of the images. The images are loaded as the bottom of the page scrolls into view.
+**grey-finder** is a Flask app that allows a user to upload a CSV file containing image links (e.g. [https://pastebin.com/BmA8B0tY](https://pastebin.com/BmA8B0tY)). After the CSV is uploaded, the images from within the file are presented to the user in a grid, along with an option to filter by size and optionally show greyscale versions of the images. The images are loaded as the bottom of the page scrolls into view.
 
 A new user is created when a user that is not already present in the database attempts to log in. Each user is presented with only the images they have downloaded. Downloads are performed in an asynchronous task.
 
