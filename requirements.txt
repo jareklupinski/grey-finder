@@ -20,7 +20,7 @@ lazy-object-proxy==1.4.3
 Mako==1.1.1
 MarkupSafe==1.1.1
 mccabe==0.6.1
-Pillow==8.1.1
+Pillow==9.0.1
 pylint==2.4.4
 pylint-flask==0.6
 pylint-plugin-utils==0.6
